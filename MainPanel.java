@@ -3,6 +3,7 @@ public class MainPanel {
         FrameClass fc = new FrameClass();
         fc.adminAccess();
         // fc.displayFrame();
+        // kin-kin
     }
 }
 
