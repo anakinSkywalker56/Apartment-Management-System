@@ -1,8 +1,8 @@
 public class MainPanel {
     public static void main(String[] args) {
         FrameClass fc = new FrameClass();
-        fc.adminAccess();
-        // fc.displayFrame();
+        // fc.adminAccess();
+        fc.displayFrame();
         // kin-kin
         // heyaysdasdas
     }

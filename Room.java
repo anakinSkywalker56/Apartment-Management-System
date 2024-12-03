@@ -15,6 +15,11 @@ public class Room {
     private String payPeriod;
     private String paymentStatus;
     private RoomState roomState;
+    private boolean yes;
+    private boolean breakfast;
+    private boolean lunch;
+    private boolean dinner;
+    private boolean cleaning;
 
     public Room(int num) {
         this.button = new JButton("" + num);
@@ -83,7 +88,12 @@ public class Room {
             String lastOccupied,
             double cashBalance,
             String payPeriod,
-            String paymentStatus) {
+            String paymentStatus,
+            boolean yes,
+            boolean breakfast,
+            boolean lunch,
+            boolean dinner,
+            boolean cleaning) {
 
         this.tenantName = tenantName;
         this.contactNum = contactNum;
@@ -93,6 +103,12 @@ public class Room {
         this.cashBalance = cashBalance;
         this.payPeriod = payPeriod;
         this.paymentStatus = paymentStatus;
+
+        this.yes = yes;
+        this.breakfast = breakfast;
+        this.lunch = lunch;
+        this.dinner = dinner;
+        this.cleaning = cleaning;
     }
 
     public void setRoomState(RoomState roomState) {
@@ -101,5 +117,25 @@ public class Room {
 
     public RoomState getRoomState() {
         return this.roomState;
+    }
+
+    public boolean getYes() {
+        return this.yes;
+    }
+
+    public boolean getBreakfast() {
+        return this.breakfast;
+    }
+
+    public boolean getLunch() {
+        return this.lunch;
+    }
+
+    public boolean getDinner() {
+        return this.dinner;
+    }
+
+    public boolean getCleaning() {
+        return this.cleaning;
     }
 }
