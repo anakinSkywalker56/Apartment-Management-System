@@ -405,13 +405,17 @@ public class FrameClass extends JFrame implements ActionListener {
                     System.out.println("im new " + diffInDays);
                     paymentAnswer = (pay) - money;
                     if (paymentAnswer == 0) {
+                        long months = (diffInDays / 30);
+                        long updateDays = diffInDays - (months * 30);
+
                         tCashBalance.setText("" + paymentAnswer);
-                        diffInDays -= 30;
-                        tPaymentPeriod.setText("" + diffInDays + " days");
-                        System.out.println("im new " + diffInDays);
+                        tPaymentPeriod.setText("" + updateDays + " days");
+                        tPaymentStatus.setText("--");
+
+                        System.out.println("im new " + updateDays);
                         Room selectedRoom = rooms[roomIndex];
                         selectedRoom.setRoomState(RoomState.GREEN);
-                        selectedRoom.setUpdatedPayments("" + paymentAnswer, "" + diffInDays + " days", "--");
+                        selectedRoom.setUpdatedPayments("" + paymentAnswer, "" + updateDays + " days", "--");
                         // selectedRoom.setColorFront(Color.GREEN);
                     } else {
                         JOptionPane.showMessageDialog(frame, "Payment Lacking");
