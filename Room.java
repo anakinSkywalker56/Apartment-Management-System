@@ -11,7 +11,7 @@ public class Room {
     private String email;
     private String startOccupied;
     private String lastOccupied;
-    private double cashBalance;
+    private String cashBalance;
     private String payPeriod;
     private String paymentStatus;
     private RoomState roomState;
@@ -20,6 +20,7 @@ public class Room {
     private boolean lunch;
     private boolean dinner;
     private boolean cleaning;
+    private long payment;
 
     public Room(int num) {
         this.button = new JButton("" + num);
@@ -60,6 +61,15 @@ public class Room {
         return this.email;
     }
 
+    public void setUpdatedPayments(
+            String cashBalance,
+            String payPeriod,
+            String paymentStatus) {
+        this.cashBalance = cashBalance;
+        this.payPeriod = payPeriod;
+        this.paymentStatus = paymentStatus;
+    }
+
     public String getStartDate() {
         return this.startOccupied;
     }
@@ -68,7 +78,7 @@ public class Room {
         return this.lastOccupied;
     }
 
-    public double getCashBalance() {
+    public String getCashBalance() {
         return this.cashBalance;
     }
 
@@ -86,7 +96,7 @@ public class Room {
             String email,
             String startOccupied,
             String lastOccupied,
-            double cashBalance,
+            String cashBalance,
             String payPeriod,
             String paymentStatus,
             boolean yes,
@@ -113,6 +123,15 @@ public class Room {
 
     public void setRoomState(RoomState roomState) {
         this.roomState = roomState;
+        if (roomState == RoomState.GREEN) {
+            this.setColorFront(Color.GREEN);
+        } else if (roomState == RoomState.YELLOW) {
+            this.setColorFront(Color.YELLOW);
+        } else if (roomState == RoomState.RED) {
+            this.setColorFront(Color.RED);
+        } else if (roomState == RoomState.UNSELECTED) {
+            this.setColorFront(Color.decode("#333333"));
+        }
     }
 
     public RoomState getRoomState() {
@@ -137,5 +156,13 @@ public class Room {
 
     public boolean getCleaning() {
         return this.cleaning;
+    }
+
+    public void setPayment(long payment) {
+        this.payment = payment;
+    }
+
+    public long getPayment() {
+        return this.payment;
     }
 }

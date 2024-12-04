@@ -66,10 +66,13 @@ public class FrameClass extends JFrame implements ActionListener {
     JSpinner dateOccupied = new JSpinner(new SpinnerDateModel());
     JSpinner lastOccupied = new JSpinner(new SpinnerDateModel());
     JLabel CashBalance = new JLabel("Cash Balance");
-    JTextField LCashBalance = new JTextField();
+    JTextField tCashBalance = new JTextField();
     JTextField tPaymentPeriod = new JTextField();
     JTextField tPaymentStatus = new JTextField();
     JButton submit = new JButton("Submit");
+    JTextField payment = new JTextField();
+    JButton payButton = new JButton("Pay");
+    JButton evict = new JButton("Evict");
 
     JPanel p1 = new JPanel();
     JPanel p2 = new JPanel();
@@ -82,6 +85,10 @@ public class FrameClass extends JFrame implements ActionListener {
     int i;
     Room[] rooms = new Room[12];
     boolean submitted = false;
+    long diffInDays = 0;
+    long pay = 0;
+    long paymentAnswer = 0;
+    long penalty = 0;
 
     ButtonGroup services = new ButtonGroup();
     JRadioButton y = new JRadioButton("Yes");
@@ -120,7 +127,7 @@ public class FrameClass extends JFrame implements ActionListener {
         p1.setLayout(null);
         p1.setBackground(Color.decode("#1F1F1F"));
         p2.setBackground(Color.decode("#1F1F1F"));
-        p3.setBackground(Color.YELLOW);
+        p3.setBackground(Color.decode("#1F1F1F"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -135,6 +142,7 @@ public class FrameClass extends JFrame implements ActionListener {
         JLabel paymentStatus = new JLabel("Payment Status");
         JLabel serve = new JLabel("Services: ");
         JLabel desc = new JLabel("(100 per day each)");
+        JLabel labelPay = new JLabel("Payment");
 
         services.add(y);
         services.add(n);
@@ -155,6 +163,7 @@ public class FrameClass extends JFrame implements ActionListener {
         CashBalance.setBounds(100, 700, 400, 40);
         paymentPeriod.setBounds(100, 750, 400, 40);
         paymentStatus.setBounds(100, 800, 400, 40);
+        labelPay.setBounds(100, 900, 400, 40);
 
         roomNumber.setBounds(250, 100, 300, 40);
         tenantName.setBounds(250, 150, 300, 40);
@@ -171,10 +180,13 @@ public class FrameClass extends JFrame implements ActionListener {
         dinner.setBounds(250, 550, 300, 40);
         cleaning.setBounds(250, 600, 300, 40);
 
-        LCashBalance.setBounds(250, 700, 300, 40);
+        tCashBalance.setBounds(250, 700, 300, 40);
         tPaymentPeriod.setBounds(250, 750, 300, 40);
         tPaymentStatus.setBounds(250, 800, 300, 40);
         submit.setBounds(250, 850, 300, 40);
+        payment.setBounds(250, 900, 300, 40);
+        payButton.setBounds(570, 900, 50, 40);
+        evict.setBounds(600, 900, 50, 40);
 
         l1.setFont(new Font("Arial", Font.PLAIN, 20));
         l2.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -199,6 +211,8 @@ public class FrameClass extends JFrame implements ActionListener {
         CashBalance.setForeground(Color.WHITE);
         paymentPeriod.setForeground(Color.WHITE);
         paymentStatus.setForeground(Color.WHITE);
+        unselected.setForeground(Color.WHITE);
+        labelPay.setForeground(Color.WHITE);
 
         roomNumber.setFont(new Font("Arial", Font.PLAIN, 20));
         tenantName.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -206,10 +220,13 @@ public class FrameClass extends JFrame implements ActionListener {
         email.setFont(new Font("Arial", Font.PLAIN, 20));
         dateOccupied.setFont(new Font("Arial", Font.PLAIN, 20));
         lastOccupied.setFont(new Font("Arial", Font.PLAIN, 20));
-        LCashBalance.setFont(new Font("Arial", Font.PLAIN, 20));
+        tCashBalance.setFont(new Font("Arial", Font.PLAIN, 20));
         tPaymentPeriod.setFont(new Font("Arial", Font.PLAIN, 20));
         tPaymentStatus.setFont(new Font("Arial", Font.PLAIN, 20));
         submit.setFont(new Font("Arial", Font.PLAIN, 20));
+        labelPay.setFont(new Font("Arial", Font.PLAIN, 20));
+        payment.setFont(new Font("Arial", Font.PLAIN, 20));
+        payButton.setFont(new Font("Arial", Font.PLAIN, 10));
 
         ///////////////////////////////////////////////////////////////////
         y.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -229,7 +246,7 @@ public class FrameClass extends JFrame implements ActionListener {
                 JSpinner.DefaultEditor lastEditor = (JSpinner.DefaultEditor) lastOccupied.getEditor();
                 String dateOc = startEditor.getTextField().getText();
                 String lastOc = lastEditor.getTextField().getText();
-                double cashBal = Double.parseDouble(LCashBalance.getText());
+                String cashBal = tCashBalance.getText();
                 String payPer = tPaymentPeriod.getText();
                 String payStat = tPaymentStatus.getText();
 
@@ -245,14 +262,36 @@ public class FrameClass extends JFrame implements ActionListener {
                             cleaning.isSelected());
 
                     if (payStat.equals("For Evict")) {
-                        selectedRoom.setColorFront(Color.RED);
+                        // selectedRoom.setColorFront(Color.RED);
                         selectedRoom.setRoomState(RoomState.RED);
+                        tenantName.setBorder(new EmptyBorder(getInsets()));
+                        tenantName.setEditable(false);
+                        contactNumber.setBorder(new EmptyBorder(getInsets()));
+                        contactNumber.setEditable(false);
+                        email.setBorder(new EmptyBorder(getInsets()));
+                        email.setEditable(false);
+                        submit.setVisible(false);
+
                     } else if (payStat.equals("--")) {
-                        selectedRoom.setColorFront(Color.GREEN);
+                        // selectedRoom.setColorFront(Color.GREEN);
                         selectedRoom.setRoomState(RoomState.GREEN);
+                        tenantName.setBorder(new EmptyBorder(getInsets()));
+                        tenantName.setEditable(false);
+                        contactNumber.setBorder(new EmptyBorder(getInsets()));
+                        contactNumber.setEditable(false);
+                        email.setBorder(new EmptyBorder(getInsets()));
+                        email.setEditable(false);
+                        submit.setVisible(false);
                     } else if (payStat.equals("Due")) {
-                        selectedRoom.setColorFront(Color.YELLOW);
+                        // selectedRoom.setColorFront(Color.YELLOW);
                         selectedRoom.setRoomState(RoomState.YELLOW);
+                        tenantName.setBorder(new EmptyBorder(getInsets()));
+                        tenantName.setEditable(false);
+                        contactNumber.setBorder(new EmptyBorder(getInsets()));
+                        contactNumber.setEditable(false);
+                        email.setBorder(new EmptyBorder(getInsets()));
+                        email.setEditable(false);
+                        submit.setVisible(false);
                     }
 
                 }
@@ -291,8 +330,8 @@ public class FrameClass extends JFrame implements ActionListener {
         p1.add(cleaning); // check
 
         p1.add(CashBalance);
-        p1.add(LCashBalance);
-        LCashBalance.setBorder(new EmptyBorder(getInsets()));
+        p1.add(tCashBalance);
+        tCashBalance.setBorder(new EmptyBorder(getInsets()));
 
         p1.add(paymentPeriod);
         p1.add(tPaymentPeriod);
@@ -303,6 +342,11 @@ public class FrameClass extends JFrame implements ActionListener {
         tPaymentStatus.setBorder(new EmptyBorder(getInsets()));
 
         p1.add(submit);
+
+        p1.add(labelPay);
+        p1.add(payment);
+        p1.add(payButton);
+        p1.add(evict);
 
         p1.setBounds(0, 0, 1000, 20000);
 
@@ -332,6 +376,79 @@ public class FrameClass extends JFrame implements ActionListener {
                 lunch.setVisible(false);
                 dinner.setVisible(false);
                 cleaning.setVisible(false);
+            }
+        });
+        payButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Room room = rooms[roomIndex];
+                RoomState state = room.getRoomState();
+                long money = Long.parseLong(payment.getText());
+
+                System.out.println(state);
+                if (state == RoomState.YELLOW) {
+                    paymentAnswer = pay - money;
+                    // System.out.println("HELLO IM PAYMENT ANSWER" + paymentAnswer + " " + pay + "
+                    // " + money);
+                    if (paymentAnswer == 0) {
+                        tCashBalance.setText("" + paymentAnswer);
+                        diffInDays -= 30;
+                        tPaymentPeriod.setText("" + diffInDays + " days");
+                        Room selectedRoom = rooms[roomIndex];
+                        selectedRoom.setRoomState(RoomState.GREEN);
+                        selectedRoom.setUpdatedPayments("" + paymentAnswer, "" + diffInDays + " days", "--");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Payment Lacking");
+                    }
+
+                } else if (state == RoomState.RED) {
+                    System.out.println("im new " + diffInDays);
+                    paymentAnswer = (pay) - money;
+                    if (paymentAnswer == 0) {
+                        tCashBalance.setText("" + paymentAnswer);
+                        diffInDays -= 30;
+                        tPaymentPeriod.setText("" + diffInDays + " days");
+                        System.out.println("im new " + diffInDays);
+                        Room selectedRoom = rooms[roomIndex];
+                        selectedRoom.setRoomState(RoomState.GREEN);
+                        selectedRoom.setUpdatedPayments("" + paymentAnswer, "" + diffInDays + " days", "--");
+                        // selectedRoom.setColorFront(Color.GREEN);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Payment Lacking");
+                    }
+                }
+            }
+        });
+
+        evict.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Room selectedRoom = rooms[roomIndex];
+
+                selectedRoom.setRoomDetails("", "", "", "", "", "", "", "", false, false, false, false, false);
+                tenantName.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+                tenantName.setText("");
+                tenantName.setEditable(true);
+                contactNumber.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+                contactNumber.setEditable(true);
+                contactNumber.setText("");
+                email.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+                email.setEditable(true);
+                email.setText("");
+                submit.setVisible(true);
+                n.setSelected(true);
+                breakfast.setSelected(false);
+                breakfast.setVisible(false);
+                lunch.setSelected(false);
+                lunch.setVisible(false);
+                dinner.setSelected(false);
+                dinner.setVisible(false);
+                cleaning.setSelected(false);
+                cleaning.setVisible(false);
+                tCashBalance.setText("");
+                tPaymentPeriod.setText("");
+                tPaymentStatus.setText("");
+                selectedRoom.setRoomState(RoomState.UNSELECTED);
             }
         });
 
@@ -436,10 +553,10 @@ public class FrameClass extends JFrame implements ActionListener {
                     dinner.setSelected(room.getDinner());
                     cleaning.setSelected(room.getCleaning());
 
-                    LCashBalance.setText("" + room.getCashBalance());
-                    LCashBalance.setOpaque(false);
-                    LCashBalance.setForeground(Color.WHITE);
-                    LCashBalance.setEditable(false);
+                    tCashBalance.setText("" + room.getCashBalance());
+                    tCashBalance.setOpaque(false);
+                    tCashBalance.setForeground(Color.WHITE);
+                    tCashBalance.setEditable(false);
 
                     tPaymentPeriod.setText(room.getPayPeriod());
                     tPaymentPeriod.setOpaque(false);
@@ -478,21 +595,36 @@ public class FrameClass extends JFrame implements ActionListener {
         Date startDate = (Date) dateOccupied.getValue();
         System.out.println(lastDate);
         System.out.println(startDate);
+
+        System.out.println(roomIndex);
+
         if (lastDate != null && startDate != null) {
             long diffInMillies = Math.abs(lastDate.getTime() - startDate.getTime());
-            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            long pay = (diffInDays / 30) * 30000;
-            LCashBalance.setText("" + pay);
+            diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            pay = (diffInDays / 30) * 30000;
+
+            if (roomIndex > -1) {
+                if (diffInDays <= 30) {
+                    tPaymentStatus.setText("--");
+                    if (rooms[roomIndex].getRoomState() != null)
+                        rooms[roomIndex].setColorFront(Color.GREEN);
+                } else if (diffInDays > 30 && diffInDays < 37) {
+                    tPaymentStatus.setText("Due");
+                    if (rooms[roomIndex].getRoomState() != null)
+                        rooms[roomIndex].setColorFront(Color.YELLOW);
+                } else {
+                    penalty = (diffInDays - 36) * 100;
+                    pay += penalty;
+                    tPaymentStatus.setText("For Evict");
+                    if (rooms[roomIndex].getRoomState() != null) {
+                        rooms[roomIndex].setColorFront(Color.RED);
+
+                    }
+                }
+            }
+            tCashBalance.setText("" + pay);
             tPaymentPeriod.setText("" + diffInDays + " days");
 
-            if (diffInDays <= 30) {
-                tPaymentStatus.setText("--");
-            } else if (diffInDays > 30 && diffInDays < 37) {
-                tPaymentStatus.setText("Due");
-
-            } else {
-                tPaymentStatus.setText("For Evict");
-            }
             System.out.println("inside");
         }
     }
