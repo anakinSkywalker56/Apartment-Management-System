@@ -1,10 +1,6 @@
-import javax.swing.*;
-// import javax.swing.BorderFactory;
 import java.awt.*;
-import java.util.Date;
 
-public class Room {
-    private JButton button;
+public class Room extends Cell {
     private int roomNum;
     private String tenantName;
     private String contactNum;
@@ -23,26 +19,18 @@ public class Room {
     private long payment;
 
     public Room(int num) {
-        this.button = new JButton("" + num);
-        this.button.setFont(new Font("Arial", Font.PLAIN, 200));
-        this.button.setPreferredSize(new Dimension(300, 300));
-        // this.button.setFocusPainted(false);
-        // this.button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.setText("" + num);
+        this.setFont(new Font("Arial", Font.PLAIN, 200));
+        this.setPreferredSize(new Dimension(300, 300));
         this.roomNum = num;
     }
 
-    public JButton getButton() {
-        return this.button;
-    }
-
     public void setColorBack(Color color) {
-        // Border empty = BorderFactory.createLineBorder(Color.BLACK);
-        // this.button.setBorder(empty);
-        this.button.setBackground(color);
+        this.setBackground(color);
     }
 
     public void setColorFront(Color color) {
-        this.button.setForeground(color);
+        this.setForeground(color);
     }
 
     public int getRoomNum() {
@@ -164,5 +152,41 @@ public class Room {
 
     public long getPayment() {
         return this.payment;
+    }
+
+    public void setRoomNum(int roomNum) {
+        this.roomNum = roomNum;
+    }
+
+    public void setContactNum(String contactNum) {
+        this.contactNum = contactNum;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setStartDate(String startOccupied) {
+        this.startOccupied = startOccupied;
+    }
+
+    public void setLastDate(String lastOccupied) {
+        this.lastOccupied = lastOccupied;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public void setPayPeriod(String payPeriod) {
+        this.payPeriod = payPeriod;
+    }
+
+    public void setPayStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public void setTenantName(String tenantName) {
+        this.tenantName = tenantName;
     }
 }
