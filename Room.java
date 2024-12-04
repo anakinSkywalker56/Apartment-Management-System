@@ -23,6 +23,14 @@ public class Room extends Cell {
         this.setFont(new Font("Arial", Font.PLAIN, 200));
         this.setPreferredSize(new Dimension(300, 300));
         this.roomNum = num;
+        this.tenantName="";
+        this.contactNum="";
+        this.email="";
+        this.startOccupied="";
+        this.lastOccupied="";
+        this.cashBalance="";
+        this.payPeriod="";
+        this.paymentStatus="";
     }
 
     public void setColorBack(Color color) {
@@ -188,5 +196,26 @@ public class Room extends Cell {
 
     public void setTenantName(String tenantName) {
         this.tenantName = tenantName;
+    }
+
+    public void setYes(boolean yes)
+    {
+        this.yes = yes;
+    }
+    public void setBreakfast(boolean breakfast)
+    {
+        this.breakfast = breakfast;
+    }
+    public void setLunch(boolean lunch)
+    {
+        this.lunch = lunch;
+    }
+    public void setDinner(boolean dinner)
+    {
+        this.dinner = dinner;   
+    }
+    public void setCleaning(boolean cleaning)
+    {
+        this.cleaning = cleaning;
     }
 }

@@ -379,8 +379,9 @@ public class FrameClass extends JFrame implements ActionListener {
                         dinner.setVisible(true);
                         cleaning.setVisible(true);
                     }
-
-                    if (room.getPayStatus() == null) {
+                    System.out.println("Test "+(room.getPayStatus()));
+                    // If pulled from txt file will be string "null"
+                    if (room.getPayStatus().isEmpty()||room.getPayStatus().contains("null")) {
                         tenantName.setBorder(BorderFactory.createLineBorder(Color.WHITE));
                         tenantName.setEditable(true);
                         contactNumber.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -391,6 +392,7 @@ public class FrameClass extends JFrame implements ActionListener {
                     } else {
                         tenantName.setBorder(new EmptyBorder(getInsets()));
                         tenantName.setEditable(false);
+                        System.out.println("ON Null: "+ room.getPayStatus());
                         contactNumber.setBorder(new EmptyBorder(getInsets()));
                         contactNumber.setEditable(false);
                         email.setBorder(new EmptyBorder(getInsets()));
@@ -420,11 +422,15 @@ public class FrameClass extends JFrame implements ActionListener {
 
                     p1.setSize(1000, 1000);
                     x = !x;
-                    unselected.setVisible(!x);
-                    p1.setVisible(x);
+                    unselected.setVisible(false);
+                    p1.setVisible(true);
                 }
             });
         }
+
+        // After rooms are added in the rooms array above call this to load data from file
+        readFromFile();
+
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -459,6 +465,7 @@ public class FrameClass extends JFrame implements ActionListener {
                         selectedRoom.setRoomState(RoomState.RED);
                         tenantName.setBorder(new EmptyBorder(getInsets()));
                         tenantName.setEditable(false);
+                        System.out.println("ON e");
                         contactNumber.setBorder(new EmptyBorder(getInsets()));
                         contactNumber.setEditable(false);
                         email.setBorder(new EmptyBorder(getInsets()));
@@ -469,6 +476,7 @@ public class FrameClass extends JFrame implements ActionListener {
                         selectedRoom.setRoomState(RoomState.GREEN);
                         tenantName.setBorder(new EmptyBorder(getInsets()));
                         tenantName.setEditable(false);
+                        System.out.println("ON --");
                         contactNumber.setBorder(new EmptyBorder(getInsets()));
                         contactNumber.setEditable(false);
                         email.setBorder(new EmptyBorder(getInsets()));
@@ -478,6 +486,7 @@ public class FrameClass extends JFrame implements ActionListener {
                         selectedRoom.setRoomState(RoomState.YELLOW);
                         tenantName.setBorder(new EmptyBorder(getInsets()));
                         tenantName.setEditable(false);
+                        System.out.println("ON d");
                         contactNumber.setBorder(new EmptyBorder(getInsets()));
                         contactNumber.setEditable(false);
                         email.setBorder(new EmptyBorder(getInsets()));
@@ -487,7 +496,6 @@ public class FrameClass extends JFrame implements ActionListener {
 
                 }
                 writeToFile();
-                readFromFile();
             }
         });
         y.addActionListener(new ActionListener() {
@@ -627,7 +635,13 @@ public class FrameClass extends JFrame implements ActionListener {
                         + room.getCashBalance() + "\n"
                         + room.getPayPeriod() + "\n"
                         + room.getPayStatus() + "\n"
-                        + room.getPayment() + "\n***\n";
+                        + room.getRoomState() + "\n"
+                        + room.getYes() + "\n"
+                        + room.getBreakfast() + "\n"
+                        + room.getLunch() + "\n"
+                        + room.getDinner() + "\n"
+                        + room.getCleaning() + "\n"
+                        + room.getPayment() + "\n";
 
                 writer.write(s.toCharArray());
             }
@@ -641,58 +655,84 @@ public class FrameClass extends JFrame implements ActionListener {
     public void readFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("filename"))) {
             String line;
-            int indexCounter = 0;
+            int indexCounter = -1;
             int counter = 0;
-            Room[] r = new Room[12];
-            for (int i = 0; i < 12; i++) {
-                r[i] = new Room(i);
-            }
             while ((line = reader.readLine()) != null) {
-                Room currentRoom = r[indexCounter];
+                // If the counter becomes 0, it means it should start the next room read
+                if (counter == 0) {
+                    indexCounter++;
+                }
+                Room currentRoom = rooms[indexCounter];
 
-                System.out.println(indexCounter);
-                // switch (counter) {
-                // case 0:
-                // currentRoom.setRoomNum(line == null ? 0 : Integer.parseInt(line));
-                // // currentRoom.setRoomNum(0);
-                // break;
-                // case 1:
-                // currentRoom.setTenantName(line);
-                // break;
-                // case 2:
-                // currentRoom.setContactNum(line);
-                // break;
-                // case 3:
-                // currentRoom.setEmail(line);
-                // break;
-                // case 4:
-                // currentRoom.setStartDate(line);
-                // break;
-                // case 5:
-                // currentRoom.setLastDate(line);
-                // break;
-                // case 6:
-                // currentRoom.setCashBalance(line);
-                // break;
-                // case 7:
-                // currentRoom.setPayPeriod(line);
-                // break;
-                // case 8:
-                // currentRoom.setPayStatus(line);
-                // break;
-                // case 9:
-                // currentRoom.setPayment(Long.parseLong(line));
-                // break;
+                // System.out.println(line + " - " + counter + " = " + indexCounter);
+                switch (counter) {
+                case 0:
+                currentRoom.setRoomNum(line == null ? 0 : Integer.parseInt(line));
+                break;
+                case 1:
+                currentRoom.setTenantName(line);
+                break;
+                case 2:
+                currentRoom.setContactNum(line);
+                break;
+                case 3:
+                currentRoom.setEmail(line);
+                break;
+                case 4:
+                currentRoom.setStartDate(line);
+                break;
+                case 5:
+                currentRoom.setLastDate(line);
+                break;
+                case 6:
+                currentRoom.setCashBalance(line);
+                break;
+                case 7:
+                currentRoom.setPayPeriod(line);
+                break;
+                case 8:
+                currentRoom.setPayStatus(line);
+                break;
+                case 9:
+                switch (line) {
+                    case "GREEN":
+                    currentRoom.setRoomState(RoomState.GREEN);
+                    break;
+                    case "YELLOW":
+                    currentRoom.setRoomState(RoomState.YELLOW);
+                    break;
+                    case "RED":
+                    currentRoom.setRoomState(RoomState.RED);
+                    break;
+                    default:
+                    currentRoom.setRoomState(null);
+                    break;
+                }
+                break;
+                case 10:
+                currentRoom.setYes(Boolean.parseBoolean(line));
+                break;
+                case 11:
+                currentRoom.setBreakfast(Boolean.parseBoolean(line));
+                break;
+                case 12:
+                currentRoom.setLunch(Boolean.parseBoolean(line));
+                break;
+                case 13:
+                currentRoom.setDinner(Boolean.parseBoolean(line));
+                break;
+                case 14:
+                currentRoom.setCleaning(Boolean.parseBoolean(line));
+                break;
+                case 15:
+                currentRoom.setPayment(line == null ? 0 : Long.parseLong(line));
+                break;
+                }
 
-                // }
-                if (counter < 10) {
+                if (counter < 15) {
                     counter++;
                 } else {
                     counter = 0;
-                }
-                if (counter % 9 == 0) {
-
-                    indexCounter++;
                 }
             }
         } catch (IOException e) {
